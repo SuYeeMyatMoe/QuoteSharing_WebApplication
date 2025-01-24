@@ -1,0 +1,28 @@
+﻿@page
+@model List<QuoteModel>;
+@{
+    ViewData["Title"] = "QuoteListPage";
+}
+<h3>Blog List Page</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>QuoteId</th>
+            <th>Quote Writer</th>
+            <th>Quote Text</th>
+            <th>Uploaded Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.QuoteID</td>
+                <td>@item.QuoteWriter</td>
+                <td>@item.QuoteText</td>
+                <td>@item.UploadedEmail</td>
+            </tr>
+        }
+    </tbody>
+</table>
