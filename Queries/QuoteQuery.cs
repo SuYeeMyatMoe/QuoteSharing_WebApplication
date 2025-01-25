@@ -22,5 +22,8 @@ FROM Tbl_QuoteSharing WHERE IsDeleted = @IsDeleted AND QuoteID = @QuoteID";
         public static string UpdateQuoteQuery { get; } =
         @"UPDATE Tbl_QuoteSharing SET QuoteWriter = @QuoteWriter, QuoteText = @QuoteText,
 UploadedEmail = @UploadedEmail WHERE QuoteID = @QuoteID AND IsDeleted = @IsDeleted";
-    }
+
+        public static string DeleteQuoteQuery { get; } =
+       @"UPDATE Tbl_Blog SET IsDeleted = @IsDeleted WHERE BlogId = @BlogId";
+    }    
 }

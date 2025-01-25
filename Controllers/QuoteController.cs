@@ -45,8 +45,8 @@ namespace QuoteSharing_WebApplication.Controllers
             }
         }
 
-            // GET: QuoteController/Details/5
-            public ActionResult Details(int id)
+        // GET: QuoteController/Details/5
+        public ActionResult Details(int id)
         {
             return View();
         }
@@ -178,24 +178,41 @@ namespace QuoteSharing_WebApplication.Controllers
             }
         }
 
-        // GET: QuoteController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: QuoteController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        [ActionName("DeleteQuoteAsync")]
+        public async Task<IActionResult> DeleteQuoteAsync(int id)
         {
             try
             {
-                return RedirectToAction(nameof(Index)); ;
-            }
-            catch
+                string query = QuoteQuery.DeleteBlogQuery;
+                var parameters = new List<SqlParameter>()
             {
-                return View();
+                new SqlParameter("@QuoteID", id),
+                new SqlParameter("@IsDeleted", true),
+            };
+
+                SqlConnection connection = new SqlConnection(DbHelper.ConnectionString);
+                await connection.OpenAsync();
+
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddRange(parameters.ToArray());
+
+                int result = await command.ExecuteNonQueryAsync();
+                await connection.CloseAsync();
+
+                if (result > 0)
+                {
+                    TempData["success"] = "Deleting Successful.";
+                }
+                else
+                {
+                    TempData["fail"] = "Deleting Fail.";
+                }
+
+                return RedirectToAction("BlogListPage");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
     }
