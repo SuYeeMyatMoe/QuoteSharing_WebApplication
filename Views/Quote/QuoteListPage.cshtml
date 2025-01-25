@@ -27,6 +27,7 @@
             <th>Quote Writer</th>
             <th>Quote Text</th>
             <th>Uploaded Email</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -37,6 +38,10 @@
                 <td>@item.QuoteWriter</td>
                 <td>@item.QuoteText</td>
                 <td>@item.UploadedEmail</td>
+                <td>
+                    <a href="/Quote/EditQuotePage?id=@item.QuoteID" class="btn btn-outline-success">Edit</a>
+                    <button class="btn btn-outline-danger">Delete</button>
+                </td>
             </tr>
         }
     </tbody>
