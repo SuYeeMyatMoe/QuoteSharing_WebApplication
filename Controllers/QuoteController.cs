@@ -133,17 +133,48 @@ namespace QuoteSharing_WebApplication.Controllers
         }
 
         // POST: QuoteController/Edit/5
+
+        [ActionName("UpdateQuoteAsync")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateQuoteAsync(QuoteRequestModel requestModel, int id)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
+                string query = QuoteQuery.UpdateQuoteQuery;
+
+                var parameters = new List<SqlParameter>()
             {
-                return View();
+                new SqlParameter("@QuoteWriter", requestModel.QuoteWriter),
+                new SqlParameter("@QuoteText", requestModel.QuoteText),
+                new SqlParameter("@UploadedEmail", requestModel.UploadedEmail),
+                new SqlParameter("@QuoteID", id),
+                new SqlParameter("@IsDeleted", false),
+            };
+
+                SqlConnection connection = new SqlConnection(DbHelper.ConnectionString);
+                await connection.OpenAsync();
+
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddRange(parameters.ToArray());
+
+                int result = await command.ExecuteNonQueryAsync();
+                await connection.CloseAsync();
+
+                if (result > 0)
+                {
+                    TempData["success"] = "Updating Successful.";
+                }
+                else
+                {
+                    TempData["fail"] = "Updating Fail.";
+                }
+
+                return RedirectToAction("QuoteListPage");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 
