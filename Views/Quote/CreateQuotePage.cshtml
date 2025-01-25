@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "Create New Blog";
+}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Add New Quote</h3>
+                </div>
+                <div class="card-body">
+                    <form action="/Quote/SaveQuoteAsync" method="post">
+                        <label>Quote Writer: </label>
+                        <input name="QuoteWriter" required type="text" class="form-control" />
+                        <br />
+                        <label>Quote Text: </label>
+                        <input name="QuoteText" required type="text" class="form-control" />
+                        <br />
+                        <label>Uploaded Email: </label>
+                        <input name="UploadedEmail" required type="text" class="form-control" />
+                        <br />
+                        <button class="btn btn-outline-primary text-white- float-end" type="submit">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

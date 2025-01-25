@@ -37,7 +37,7 @@ namespace QuoteSharing_WebApplication.Controllers
                 string jsonStr = JsonConvert.SerializeObject(dt);//using Newtonsoft.Json;
                 var lst = JsonConvert.DeserializeObject<List<QuoteModel>>(jsonStr);
 
-                return View();
+                return View(lst);
             }
             catch (Exception ex)
             {
@@ -52,6 +52,7 @@ namespace QuoteSharing_WebApplication.Controllers
         }
 
         // GET: QuoteController/Create
+        [ActionName("CreateQuotePage")]
         public ActionResult Create()
         {
             return View();
@@ -59,23 +60,76 @@ namespace QuoteSharing_WebApplication.Controllers
 
         // POST: QuoteController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        //[ValidateAntiForgeryToken]
+        [ActionName("SaveQuoteAsync")]
+        public async Task<ActionResult> SaveQuoteAsync(QuoteRequestModel requestModel)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
+                string query = QuoteQuery.CreateBlogQuery;
+                var parameters = new List<SqlParameter>()
             {
-                return View();
+                new SqlParameter("@QuoteWriter", requestModel.QuoteWriter),
+                new SqlParameter("@QuoteText", requestModel.QuoteText),
+                new SqlParameter("@UploadedEmail ", requestModel.UploadedEmail),
+            };
+
+                SqlConnection connection = new(DbHelper.ConnectionString);
+                await connection.OpenAsync();
+
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddRange(parameters.ToArray());
+
+                int result = await command.ExecuteNonQueryAsync();
+                await connection.CloseAsync();
+
+                if (result > 0) // row effected > 0
+                {
+                    TempData["success"] = "Saving Successful.";
+                }
+                else
+                {
+                    TempData["fail"] = "Saving Fail.";
+                }
+
+                return RedirectToAction("QuoteListPage");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 
         // GET: QuoteController/Edit/5
-        public ActionResult Edit(int id)
+        
+        public async Task<ActionResult> Edit(int id)
         {
-            return View();
+            try
+            {
+                string query = QuoteQuery.GetQuoteByIdQuery;
+
+                SqlConnection connection = new SqlConnection(DbHelper.ConnectionString);
+                await connection.OpenAsync();
+
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@QuoteID", id);
+                command.Parameters.AddWithValue("@IsDeleted", false);
+
+                SqlDataAdapter adapter = new(command);
+                DataTable dt = new DataTable();
+                adapter.Fill(dt);
+
+                string jsonStr = JsonConvert.SerializeObject(dt);
+                var lst = JsonConvert.DeserializeObject<List<QuoteModel>>(jsonStr);
+
+                await connection.CloseAsync();
+
+                return View(lst);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         // POST: QuoteController/Edit/5

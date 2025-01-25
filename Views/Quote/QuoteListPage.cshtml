@@ -1,10 +1,25 @@
-﻿@page
-@model List<QuoteModel>;
+﻿@model List<QuoteModel>;
 @{
     ViewData["Title"] = "QuoteListPage";
+    var success = TempData["success"];
+    var fail = TempData["fail"];
 }
 <h3>Blog List Page</h3>
+<a href="/Quote/CreateQuotePage" class="btn btn-outline-dark my-3">Create New Blog</a>
 
+@if (success is not null)
+{
+    <div class="alert alert-success" role="alert">
+        @success
+    </div>
+}
+
+@if (fail is not null)
+{
+    <div class="alert alert-danger" role="alert">
+        @fail
+    </div>
+}
 <table class="table">
     <thead>
         <tr>
