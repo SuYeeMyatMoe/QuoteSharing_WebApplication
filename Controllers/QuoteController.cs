@@ -101,7 +101,7 @@ namespace QuoteSharing_WebApplication.Controllers
         }
 
         // GET: QuoteController/Edit/5
-        
+        [ActionName("EditQuotePage")]
         public async Task<ActionResult> Edit(int id)
         {
             try
