@@ -183,7 +183,7 @@ namespace QuoteSharing_WebApplication.Controllers
         {
             try
             {
-                string query = QuoteQuery.DeleteBlogQuery;
+                string query = QuoteQuery.DeleteQuoteQuery;
                 var parameters = new List<SqlParameter>()
             {
                 new SqlParameter("@QuoteID", id),
@@ -208,7 +208,36 @@ namespace QuoteSharing_WebApplication.Controllers
                     TempData["fail"] = "Deleting Fail.";
                 }
 
-                return RedirectToAction("BlogListPage");
+                return RedirectToAction("QuoteListPage");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        [ActionName("SearchQuote")]
+        public async Task<ActionResult> Search(string value)
+        {
+            try
+            {
+                string query = QuoteQuery.GetQuoteByIdQuery;
+
+                SqlConnection connection = new SqlConnection(DbHelper.ConnectionString);
+                await connection.OpenAsync();
+
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@IsDeleted", false);
+
+                SqlDataAdapter adapter = new(command);
+                DataTable dt = new DataTable();
+                adapter.Fill(dt);
+
+                string jsonStr = JsonConvert.SerializeObject(dt);
+                var lst = JsonConvert.DeserializeObject<List<QuoteModel>>(jsonStr);
+
+                await connection.CloseAsync();
+
+                return View(lst);
             }
             catch (Exception ex)
             {

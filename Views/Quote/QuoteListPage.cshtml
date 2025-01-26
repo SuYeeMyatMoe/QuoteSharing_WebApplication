@@ -5,6 +5,13 @@
     var fail = TempData["fail"];
 }
 <h3>Blog List Page</h3>
+
+<div class="d-flex justify-content-left mt-4">
+        <div class="input-group mb-3" style="width: 40vh;">
+            <input type="text" class="form-control" placeholder="Enter text here" aria-label="Input field" aria-describedby="button-addon">
+            <button class="btn btn-primary" type="button" id="button-addon">Button</button>
+        </div>
+</div>
 <a href="/Quote/CreateQuotePage" class="btn btn-outline-dark my-3">Create New Blog</a>
 
 @if (success is not null)
@@ -40,9 +47,19 @@
                 <td>@item.UploadedEmail</td>
                 <td>
                     <a href="/Quote/EditQuotePage?id=@item.QuoteID" class="btn btn-outline-success">Edit</a>
-                    <button class="btn btn-outline-danger">Delete</button>
+                    <button class="btn btn-outline-danger" onclick="btnDelete('@item.QuoteID')">Delete</button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+@section scripts {
+    <script>
+        function btnDelete(id) {
+            if (window.confirm("Are you sure you want to delete?")) {
+                window.location.href = `/Quote/DeleteQuoteAsync?id=${id}`;
+            }
+        }
+    </script>
+}
