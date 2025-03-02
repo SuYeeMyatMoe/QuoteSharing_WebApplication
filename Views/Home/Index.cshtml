@@ -1,8 +1,37 @@
-﻿@{
+﻿@model List<QuoteModel>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5">
+    <h1 class="text-center mb-4" style="color: #5A9FD4;">📜 Quote Blog 📜</h1>
+
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="row">
+            @foreach (var quote in Model)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-lg" style="border-radius: 15px; background-color: #EAF6FF;">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold" style="color: #5A9FD4;">@quote.QuoteWriter</h5>
+                            <p class="card-text">"@quote.QuoteText"</p>
+                            <p class="text-muted"><small>Uploaded by: @quote.UploadedEmail</small></p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- See More Button -->
+        <div class="text-center mt-4">
+            <a href="/Quote/QuoteListPage" class="btn text-white shadow-lg"
+               style="background-color: #5A9FD4; padding: 12px 20px; font-size: 16px; border-radius: 25px;">🔍 See More Quotes</a>
+        </div>
+    }
+    else
+    {
+        <p class="text-center text-muted">No quotes available.</p>
+    }
 </div>
