@@ -1,5 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using QuoteSharing_WebApplication.Configs;
 using QuoteSharing_WebApplication.Models;
+using QuoteSharing_WebApplication.Queries;
+using System.Data.SqlClient;
+using System.Data;
 using System.Diagnostics;
 
 namespace QuoteSharing_WebApplication.Controllers
@@ -13,9 +18,33 @@ namespace QuoteSharing_WebApplication.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            try
+            {
+                string query = QuoteQuery.GetQuoteListQuery;
+
+                using SqlConnection connection = new(DbHelper.ConnectionString);
+                await connection.OpenAsync();
+
+                using SqlCommand command = new(query, connection);
+                command.Parameters.AddWithValue("@IsDeleted", false);
+
+                SqlDataAdapter adapter = new(command);
+                DataTable dt = new();
+                adapter.Fill(dt);
+
+                await connection.CloseAsync();
+
+                string jsonStr = JsonConvert.SerializeObject(dt);
+                var quotes = JsonConvert.DeserializeObject<List<QuoteModel>>(jsonStr);
+
+                return View(quotes);
+            }
+            catch (Exception ex)
+            {
+                return View(new List<QuoteModel>());
+            }
         }
 
         public IActionResult Privacy()
