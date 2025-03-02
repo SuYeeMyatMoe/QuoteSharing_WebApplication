@@ -1,63 +1,99 @@
-﻿@model List<QuoteModel>;
+﻿@model List<QuoteModel>
 @{
-    ViewData["Title"] = "QuoteListPage";
+    ViewData["Title"] = "Quote List Dashboard";
     var success = TempData["success"];
     var fail = TempData["fail"];
 }
-<h3>Blog List Page</h3>
 
-<div class="d-flex justify-content-left mt-4">
-        <div class="input-group mb-3" style="width: 40vh;">
-            <input type="text" class="form-control" placeholder="Enter text here" aria-label="Input field" aria-describedby="button-addon">
-            <button class="btn btn-primary" type="button" id="button-addon">Button</button>
+<div class="container mt-5">
+    <h1 class="text-center text-primary mb-4" style="color: #5A9FD4;">📜 Quote List 📜</h1>
+
+    <!-- Create New Quote Button & Search Bar -->
+    <div class="d-flex justify-content-between mb-3">
+        <a href="/Quote/CreateQuotePage" class="btn text-white rounded-pill shadow" style="background-color: #5A9FD4;">+ Add New Quote</a>
+        <div class="input-group" style="width: 40%;">
+            <input type="text" class="form-control border-0 shadow-sm" id="searchInput" onkeyup="searchQuotes()" placeholder="Search Quotes..." aria-label="Search">
+            <button class="btn text-white" style="background-color: #b4dafa;">🔍</button>
         </div>
+    </div>
+
+    <!-- Success & Error Messages -->
+    @if (success is not null)
+    {
+        <div class="alert alert-success text-center shadow-sm" style="color: #4178A9; background-color: #EAF6FF;">
+            @success
+        </div>
+    }
+
+    @if (fail is not null)
+    {
+        <div class="alert alert-danger text-center shadow-sm" style="color: #A94442; background-color: #FDEDED;">
+            @fail
+        </div>
+    }
+
+    <!-- Quote List Table -->
+    <div class="table-responsive">
+        <table class="table table-hover shadow-sm text-center" id="quoteTable">
+            <thead class="text-white" style="background-color: #5DADE2;">
+                <tr>
+                    <th>#</th>
+                    <th>Quote Writer</th>
+                    <th>Quote Text</th>
+                    <th>Uploaded Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="quoteRow">
+                        <td>@item.QuoteID</td>
+                        <td class="fw-bold text-primary" style="color: #5A9FD4;">@item.QuoteWriter</td>
+                        <td>"@item.QuoteText"</td>
+                        <td>@item.UploadedEmail</td>
+                        <td>
+                            <a href="/Quote/EditQuotePage?id=@item.QuoteID" class="btn btn-sm rounded-pill shadow text-white" style="background-color: #5A9FD4;">✏️ Edit</a>
+                            <button class="btn btn-sm rounded-pill shadow text-white" style="background-color: #D9534F;" onclick="btnDelete('@item.QuoteID')">🗑️ Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
-<a href="/Quote/CreateQuotePage" class="btn btn-outline-dark my-3">Create New Blog</a>
-
-@if (success is not null)
-{
-    <div class="alert alert-success" role="alert">
-        @success
-    </div>
-}
-
-@if (fail is not null)
-{
-    <div class="alert alert-danger" role="alert">
-        @fail
-    </div>
-}
-<table class="table">
-    <thead>
-        <tr>
-            <th>QuoteId</th>
-            <th>Quote Writer</th>
-            <th>Quote Text</th>
-            <th>Uploaded Email</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.QuoteID</td>
-                <td>@item.QuoteWriter</td>
-                <td>@item.QuoteText</td>
-                <td>@item.UploadedEmail</td>
-                <td>
-                    <a href="/Quote/EditQuotePage?id=@item.QuoteID" class="btn btn-outline-success">Edit</a>
-                    <button class="btn btn-outline-danger" onclick="btnDelete('@item.QuoteID')">Delete</button>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
 
 @section scripts {
     <script>
+        // Function to search quotes by quote writer, quote text, or uploaded email
+        function searchQuotes() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById('searchInput');
+            filter = input.value.toUpperCase();
+            table = document.getElementById('quoteTable');
+            tr = table.getElementsByTagName('tr');
+
+            // Loop through all table rows and hide those that don't match the search
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName('td');
+                if (td.length > 0) {
+                    txtValue = "";
+                    // Concatenate values of each td in the row (quote writer, quote text, email)
+                    for (var j = 0; j < td.length - 1; j++) {
+                        txtValue += td[j].textContent || td[j].innerText;
+                    }
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        // Delete function
         function btnDelete(id) {
-            if (window.confirm("Are you sure you want to delete?")) {
+            if (window.confirm("Are you sure you want to delete this quote?")) {
                 window.location.href = `/Quote/DeleteQuoteAsync?id=${id}`;
             }
         }

@@ -1,25 +1,35 @@
-﻿@{
-    ViewData["Title"] = "Create New Blog";
+﻿@model List<QuoteModel>
+
+@{
+    ViewData["Title"] = "Create New Quote";
 }
-<div class="container mt-4">
+
+<div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="text-center">Add New Quote</h3>
+            <div class="card shadow-lg" style="border-radius: 15px; background-color: #EAF6FF;">
+                <div class="card-header text-center text-white" style="background-color: #5A9FD4; border-radius: 15px 15px 0 0;">
+                    <h3>➕ Add New Quote</h3>
                 </div>
                 <div class="card-body">
                     <form action="/Quote/SaveQuoteAsync" method="post">
-                        <label>Quote Writer: </label>
-                        <input name="QuoteWriter" required type="text" class="form-control" />
+                        <label class="fw-bold" style="color: #4178A9;">Quote Writer:</label>
+                        <input name="QuoteWriter" required type="text" class="form-control shadow-sm"
+                               style="border-radius: 10px; border: 1px solid #5A9FD4;" />
                         <br />
-                        <label>Quote Text: </label>
-                        <input name="QuoteText" required type="text" class="form-control" />
+                        <label class="fw-bold" style="color: #4178A9;">Quote Text:</label>
+                        <input name="QuoteText" required type="text" class="form-control shadow-sm"
+                               style="border-radius: 10px; border: 1px solid #5A9FD4;" />
                         <br />
-                        <label>Uploaded Email: </label>
-                        <input name="UploadedEmail" required type="text" class="form-control" />
+                        <label class="fw-bold" style="color: #4178A9;">Uploaded Email:</label>
+                        <input name="UploadedEmail" required type="text" class="form-control shadow-sm"
+                               style="border-radius: 10px; border: 1px solid #5A9FD4;" />
                         <br />
-                        <button class="btn btn-outline-primary text-white- float-end" type="submit">Save</button>
+                        <button class="btn text-white shadow-lg float-end"
+                                style="background-color: #5A9FD4; padding: 10px 20px; font-size: 16px; border-radius: 25px;"
+                                type="submit">
+                            💾 Save
+                        </button>
                     </form>
                 </div>
             </div>

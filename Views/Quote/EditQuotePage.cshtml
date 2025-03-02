@@ -1,28 +1,35 @@
-﻿@model List<QuoteModel>;
+﻿@model List<QuoteModel>
 
 @{
     ViewData["Title"] = "Edit Quote";
 }
 
-<div class="container mt-4">
+<div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="text-center">Eidt Quote</h3>
+            <div class="card shadow-lg" style="border-radius: 15px; background-color: #EAF6FF;">
+                <div class="card-header text-center text-white" style="background-color: #5A9FD4; border-radius: 15px 15px 0 0;">
+                    <h3>✏️ Edit Quote</h3>
                 </div>
                 <div class="card-body">
                     <form action="/Quote/UpdateQuoteAsync?id=@Model[0].QuoteID" method="post">
-                        <label>Quote Writer:</label>
-                        <input name="QuoteWriter" required type="text" class="form-control" value="@Model[0].QuoteWriter" />
+                        <label class="fw-bold" style="color: #4178A9;">Quote Writer:</label>
+                        <input name="QuoteWriter" required type="text" class="form-control shadow-sm" value="@Model[0].QuoteWriter"
+                               style="border-radius: 10px; border: 1px solid #5A9FD4;" />
                         <br />
-                        <label>Quote Text: </label>
-                        <input name="QuoteText" required type="text" class="form-control" value="@Model[0].QuoteText" />
+                        <label class="fw-bold" style="color: #4178A9;">Quote Text: </label>
+                        <input name="QuoteText" required type="text" class="form-control shadow-sm" value="@Model[0].QuoteText"
+                               style="border-radius: 10px; border: 1px solid #5A9FD4;" />
                         <br />
-                        <label>Uploaded Email: </label>
-                        <input name="UploadedEmail" required type="text" class="form-control" value="@Model[0].UploadedEmail" />
+                        <label class="fw-bold" style="color: #4178A9;">Uploaded Email: </label>
+                        <input name="UploadedEmail" required type="text" class="form-control shadow-sm" value="@Model[0].UploadedEmail"
+                               style="border-radius: 10px; border: 1px solid #5A9FD4;" />
                         <br />
-                        <button class="btn btn-outline-primary text-white- float-end" type="submit">Save</button>
+                        <button class="btn text-white shadow-lg float-end"
+                                style="background-color: #5A9FD4; padding: 10px 20px; font-size: 16px; border-radius: 25px;"
+                                type="submit">
+                            💾 Save
+                        </button>
                     </form>
                 </div>
             </div>

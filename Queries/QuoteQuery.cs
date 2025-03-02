@@ -2,6 +2,7 @@
 {
     public class QuoteQuery
     {
+        //{ get; } to be able to see reference in other classes
         public static string GetQuoteListQuery { get; } =
        @"SELECT [QuoteID]
       ,[QuoteWriter]
@@ -25,5 +26,18 @@ UploadedEmail = @UploadedEmail WHERE QuoteID = @QuoteID AND IsDeleted = @IsDelet
 
         public static string DeleteQuoteQuery { get; } =
        @"UPDATE Tbl_QuoteSharing SET IsDeleted = @IsDeleted WHERE QuoteID = @QuoteID";
-    }    
+
+        public static string SearchQuote { get; } =
+        @"declare @value NVARCHAR(50) = @value;
+SELECT TOP (1000) [QuoteID]
+      ,[QuoteWriter]
+      ,[QuoteText]
+      ,[UploadedEmail]
+      ,[IsDeleted]
+  FROM [QuoteSharing_DB].[dbo].[Tbl_QuoteSharing]
+  WHERE (QuoteWriter LIKE '%' + @value + '%'
+  OR QuoteText LIKE '%' + @value + '%'
+  OR UploadedEmail LIKE '%' + @value + '%')
+  AND IsDeleted = 0";
+    }   
 }
