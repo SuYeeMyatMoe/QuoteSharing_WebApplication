@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using QuoteSharing_WebApplication.Configs;
 using QuoteSharing_WebApplication.Models;
 using QuoteSharing_WebApplication.Queries;
+using System.Data.SqlClient;
 
 namespace QuoteSharing_WebApplication.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly AccountRepository _accountRepo = new AccountRepository();
 
         // GET: Login Page
         public IActionResult Login()
@@ -14,16 +15,28 @@ namespace QuoteSharing_WebApplication.Controllers
             return View();
         }
 
-        // POST: Login Authentication
+        // POST: Handle Login
         [HttpPost]
         public IActionResult Login(UserModel model)
         {
-            var user = _accountRepo.AuthenticateUser(model.Email, model.Password);
-            if (user != null)
+            using (SqlConnection con = new SqlConnection(DbHelper.ConnectionString))
             {
-                HttpContext.Session.SetInt32("UserID", user.UserID);
-                HttpContext.Session.SetString("UserName", user.UserName);
-                return RedirectToAction("QuoteListPage", "Quote");
+                string query = "SELECT UserID, UserName, Email FROM Users WHERE Email = @Email AND Password = @Password";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@Email", model.Email);
+                    cmd.Parameters.AddWithValue("@Password", model.Password);
+                    con.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        HttpContext.Session.SetString("UserID", reader["UserID"].ToString());
+                        HttpContext.Session.SetString("UserName", reader["UserName"].ToString());
+                        HttpContext.Session.SetString("UserEmail", reader["Email"].ToString());
+
+                        return RedirectToAction("QuoteListPage", "Quote");
+                    }
+                }
             }
 
             ViewBag.Error = "Invalid email or password";
@@ -36,22 +49,33 @@ namespace QuoteSharing_WebApplication.Controllers
             return View();
         }
 
-        // POST: Signup 
+        // POST: Handle Signup
         [HttpPost]
         public IActionResult Signup(UserModel model)
         {
             if (ModelState.IsValid)
             {
-                bool isRegistered = _accountRepo.RegisterUser(model);
-                if (isRegistered)
+                using (SqlConnection con = new SqlConnection(DbHelper.ConnectionString))
                 {
-                    return RedirectToAction("Login");
+                    string query = "INSERT INTO Users (UserName, Email, Password) VALUES (@UserName, @Email, @Password)";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@UserName", model.UserName);
+                        cmd.Parameters.AddWithValue("@Email", model.Email);
+                        cmd.Parameters.AddWithValue("@Password", model.Password);
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
                 }
-                ViewBag.Error = "Signup failed. Try again.";
+
+                TempData["Success"] = "Account created successfully! Please log in.";
+                return RedirectToAction("Login");
             }
-            return View();
+
+            return View(model);
         }
 
+        // Logout and clear session
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();

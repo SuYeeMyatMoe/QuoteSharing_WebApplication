@@ -33,6 +33,9 @@
                                 <span class="nav-link text-dark">Welcome, @Context.Session.GetString("UserName")</span>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Profile" asp-action="Settings">Profile Settings</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
                             </li>
                         }

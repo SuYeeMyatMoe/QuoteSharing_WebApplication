@@ -4,14 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
-// Add session services
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout (optional)
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true; // Make session cookie essential
-});
+builder.Services.AddSession(); // Add session support
 
 var app = builder.Build();
 
@@ -24,12 +17,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 
-// Use session before authorization
-app.UseSession();
-
+app.UseSession(); // Enable session
 app.UseAuthorization();
 
 app.MapControllerRoute(
