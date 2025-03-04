@@ -61,7 +61,7 @@ CREATE TABLE Tbl_QuoteSharing (
 
 ```json
 "ConnectionString": {
-    "DefaultConnection": "Server=YOUR_SERVER;Database=QuoteSharingDB;Trusted_Connection=True;"
+    "DefaultConnection": "Server=YOUR_SERVER;Database=QuoteSharing_DB;Trusted_Connection=True;"
 }
 ```
 
